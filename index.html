@@ -613,10 +613,15 @@ function openM(url){
   var dp=r[F.dp];
   var dpKpi=dp!=null&&dp>0?'<div class="kpi"><div class="kpi-l">Price Drop</div><div class="kpi-v a">&#9660;'+dp.toFixed(1)+'%</div></div>':'';
   var vl=r[F.vl], lpsf=r[F.lpsf], ldt=r[F.ldt];
+  if(lpsf==null&&co.length>0){
+    var _sqft=r[F.sqft];
+    var _qc=co.filter(function(c){return _sqft>0&&Math.abs(c.sqft-_sqft)/_sqft<=0.05;}).sort(function(a,b){return b.dt<a.dt?-1:1;});
+    if(_qc.length>0){lpsf=_qc[0].psf;ldt=_qc[0].dt;vl=lpsf>0?(lpsf-r[F.apf])/lpsf*100:null;}
+  }
   var vlKpiCls=vl!=null&&vl>0?'g':vl!=null?'r':'';
   var vlKpiTxt=vl!=null?(vl>0?'+':'')+vl.toFixed(1)+'%':'No comp';
   var ldtLabel=ldt?'Last Sale ('+ldt+')':'Last Sale PSF';
-  var lpsLbl=lpsf?'<div class="kpi-l">'+ldtLabel+'</div><div class="kpi-v">'+fmt(lpsf)+' /sqft</div>':'<div class="kpi-l">Last Sale PSF</div><div class="kpi-v" style="color:var(--muted);font-size:11px">No 3-month ±5% comp</div>';
+  var lpsLbl=lpsf?'<div class="kpi-l">'+ldtLabel+'</div><div class="kpi-v">'+fmt(lpsf)+' /sqft</div>':'<div class="kpi-l">Last Sale PSF</div><div class="kpi-v" style="color:var(--muted);font-size:11px">No ±5% sqft comp</div>';
   document.getElementById('m-kpis').innerHTML=
     '<div class="kpi"><div class="kpi-l">Asking</div><div class="kpi-v">AED '+fmt(r[F.price])+'</div></div>'+
     '<div class="kpi"><div class="kpi-l">Ask PSF</div><div class="kpi-v">'+fmt(r[F.apf])+'</div></div>'+
