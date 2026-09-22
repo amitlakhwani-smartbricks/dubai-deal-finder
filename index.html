@@ -336,6 +336,12 @@ tbody tr.starred td{background:rgba(185,138,46,.05);}
       <span class="toggle-lbl">Both Signals</span>
     </label>
   </div>
+  <div class="ctrl-grp">
+    <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+      <button class="toggle" id="t-rt"></button>
+      <span class="toggle-lbl">&#127968; Rented</span>
+    </label>
+  </div>
 </div>
 <div class="tbl-outer">
 <table id="tbl">
@@ -407,7 +413,7 @@ var AREAS=[{"name":"Jumeirah Village Circle (JVC)","count":560,"med_disc":5.3,"m
 var F={url:0,bldg:1,area:2,beds:3,price:4,sqft:5,apf:6,mpf:7,p25:8,dm:9,da:10,nc:11,mt:12,ls:13,sc:14,sv:15,ag:16,ph:17,br:18,pt:19,st:20,dp:21,dpd:22,ms:23,lpsf:24,vl:25,ldt:26,rt:27};
 
 var sC=25,sD=-1;
-var fArea='all',fBeds='all',fStatus='all',fMaxPrice=2000000,fDrop=false,fMs=false,fBoth=false;
+var fArea='all',fBeds='all',fStatus='all',fMaxPrice=2000000,fDrop=false,fMs=false,fBoth=false,fRented=false;
 var _mUrl='';
 var starred=new Set();
 try{starred=new Set(JSON.parse(localStorage.getItem('ddf_sl')||'[]'));}catch(e){}
@@ -472,6 +478,7 @@ function filtered(){
     if(fDrop&&!(r[F.dp]!=null&&r[F.dp]>0))return false;
     if(fMs&&!r[F.ms])return false;
     if(fBoth&&!(r[F.da]!=null&&r[F.da]>0))return false;
+    if(fRented&&!r[F.rt])return false;
     return true;
   });
 }
@@ -668,12 +675,13 @@ document.getElementById('ov').addEventListener('click',function(e){if(e.target==
 });
 document.getElementById('f-area').addEventListener('change',function(e){fArea=e.target.value;render();});
 document.getElementById('f-maxprice').addEventListener('input',function(e){fMaxPrice=+e.target.value||2000000;render();});
-['t-drop','t-ms','t-both'].forEach(function(id){
+['t-drop','t-ms','t-both','t-rt'].forEach(function(id){
   document.getElementById(id).addEventListener('click',function(){
     this.classList.toggle('on');
     if(id==='t-drop')fDrop=this.classList.contains('on');
     else if(id==='t-ms')fMs=this.classList.contains('on');
-    else fBoth=this.classList.contains('on');
+    else if(id==='t-both')fBoth=this.classList.contains('on');
+    else fRented=this.classList.contains('on');
     render();
   });
 });
